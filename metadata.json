@@ -1,0 +1,7 @@
+{
+  "name": "Mu'adhin Web (Prayer Alarm)",
+  "description": "A React PWA for calculating prayer times and scheduling notifications based on user location.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

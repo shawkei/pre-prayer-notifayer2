@@ -1,0 +1,50 @@
+import { City, CalculationMethod, AppSettings } from './types';
+
+export const DEFAULT_SETTINGS: AppSettings = {
+  method: CalculationMethod.EGYPTIAN,
+  preAdhanOffsetMinutes: 5,
+  enabledPrayers: {
+    fajr: true,
+    sunrise: false,
+    dhuhr: true,
+    asr: true,
+    maghrib: true,
+    isha: true,
+  },
+  hasCompletedOnboarding: false,
+  language: 'en', // Default to English
+};
+
+export const CITIES: City[] = [
+  { name: 'Cairo', country: 'Egypt', coords: { latitude: 30.0444, longitude: 31.2357 } },
+  { name: 'Alexandria', country: 'Egypt', coords: { latitude: 31.2001, longitude: 29.9187 } },
+  { name: 'Giza', country: 'Egypt', coords: { latitude: 30.0131, longitude: 31.2089 } },
+  { name: 'Luxor', country: 'Egypt', coords: { latitude: 25.6872, longitude: 32.6396 } },
+  { name: 'Aswan', country: 'Egypt', coords: { latitude: 24.0889, longitude: 32.8998 } },
+  { name: 'Sharm El-Sheikh', country: 'Egypt', coords: { latitude: 27.9158, longitude: 34.3299 } },
+  { name: 'Mecca', country: 'Saudi Arabia', coords: { latitude: 21.3891, longitude: 39.8579 } },
+  { name: 'Medina', country: 'Saudi Arabia', coords: { latitude: 24.5247, longitude: 39.5692 } },
+  { name: 'Dubai', country: 'UAE', coords: { latitude: 25.2048, longitude: 55.2708 } },
+  { name: 'Istanbul', country: 'Turkey', coords: { latitude: 41.0082, longitude: 28.9784 } },
+  { name: 'London', country: 'UK', coords: { latitude: 51.5074, longitude: -0.1278 } },
+  { name: 'New York', country: 'USA', coords: { latitude: 40.7128, longitude: -74.0060 } },
+  { name: 'Paris', country: 'France', coords: { latitude: 48.8566, longitude: 2.3522 } },
+  { name: 'Berlin', country: 'Germany', coords: { latitude: 52.5200, longitude: 13.4050 } },
+  { name: 'Moscow', country: 'Russia', coords: { latitude: 55.7558, longitude: 37.6173 } },
+  { name: 'Jakarta', country: 'Indonesia', coords: { latitude: -6.2088, longitude: 106.8456 } },
+  { name: 'Karachi', country: 'Pakistan', coords: { latitude: 24.8607, longitude: 67.0011 } },
+  { name: 'Dhaka', country: 'Bangladesh', coords: { latitude: 23.8103, longitude: 90.4125 } },
+  { name: 'Kuala Lumpur', country: 'Malaysia', coords: { latitude: 3.1390, longitude: 101.6869 } },
+  { name: 'Riyadh', country: 'Saudi Arabia', coords: { latitude: 24.7136, longitude: 46.6753 } },
+  { name: 'Tehran', country: 'Iran', coords: { latitude: 35.6892, longitude: 51.3890 } },
+  { name: 'Baghdad', country: 'Iraq', coords: { latitude: 33.3152, longitude: 44.3661 } },
+  { name: 'Casablanca', country: 'Morocco', coords: { latitude: 33.5731, longitude: -7.5898 } },
+  { name: 'Tunis', country: 'Tunisia', coords: { latitude: 36.8065, longitude: 10.1815 } },
+  { name: 'Amman', country: 'Jordan', coords: { latitude: 31.9454, longitude: 35.9284 } },
+  { name: 'Beirut', country: 'Lebanon', coords: { latitude: 33.8938, longitude: 35.5018 } },
+  { name: 'Doha', country: 'Qatar', coords: { latitude: 25.2854, longitude: 51.5310 } },
+  { name: 'Kuwait City', country: 'Kuwait', coords: { latitude: 29.3759, longitude: 47.9774 } },
+  { name: 'Muscat', country: 'Oman', coords: { latitude: 23.5880, longitude: 58.3829 } },
+  { name: 'Manama', country: 'Bahrain', coords: { latitude: 26.2285, longitude: 50.5860 } },
+  { name: 'Sydney', country: 'Australia', coords: { latitude: -33.8688, longitude: 151.2093 } },
+];

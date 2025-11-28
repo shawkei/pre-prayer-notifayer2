@@ -1,0 +1,15 @@
+{
+  "appId": "com.muadhin.app",
+  "appName": "Muadhin",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_notifications",
+      "iconColor": "#48CFAD",
+      "sound": "beep.wav"
+    }
+  }
+}
