@@ -41,6 +41,16 @@ jobs:
           npx cap add android
           npx cap sync
 
+      - name: Inject Android Permissions
+        run: |
+          MANIFEST_PATH="android/app/src/main/AndroidManifest.xml"
+          # Inject permissions before the <application> tag
+          sed -i '/<application/i \    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />' $MANIFEST_PATH
+          sed -i '/<application/i \    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />' $MANIFEST_PATH
+          sed -i '/<application/i \    <uses-feature android:name="android.hardware.location.gps" />' $MANIFEST_PATH
+          # Print file content to verify in logs
+          cat $MANIFEST_PATH
+
       - name: Build APK (Debug)
         working-directory: ./android
         run: ./gradlew assembleDebug
