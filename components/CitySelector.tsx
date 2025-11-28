@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Search, MapPin, Navigation, ChevronRight, Globe, ChevronLeft } from 'lucide-react';
+import { Search, MapPin, Navigation, ChevronRight, Globe, ChevronLeft, Loader2 } from 'lucide-react';
+import { Geolocation } from '@capacitor/geolocation';
 import { City } from '../types';
 import { CITIES } from '../constants';
 import { translations, Language } from '../translations';
@@ -17,6 +18,7 @@ export const CitySelector: React.FC<Props> = ({ onSelectCity, lang }) => {
   const [manualMode, setManualMode] = useState(false);
   const [manualLat, setManualLat] = useState('');
   const [manualLng, setManualLng] = useState('');
+  const [loadingLoc, setLoadingLoc] = useState(false);
 
   const filteredCities = useMemo(() => {
     const term = searchTerm.toLowerCase();
@@ -39,22 +41,36 @@ export const CitySelector: React.FC<Props> = ({ onSelectCity, lang }) => {
     }
   };
 
-  const getUserLocation = () => {
-    if (navigator.geolocation) {
-       navigator.geolocation.getCurrentPosition((position) => {
-         onSelectCity({
+  const getUserLocation = async () => {
+    setLoadingLoc(true);
+    try {
+        // Check permissions first
+        const perm = await Geolocation.checkPermissions();
+        if (perm.location === 'denied' || perm.coarseLocation === 'denied') {
+            const req = await Geolocation.requestPermissions();
+            if (req.location === 'denied') {
+                throw new Error('Permission denied');
+            }
+        }
+
+        const position = await Geolocation.getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 10000
+        });
+
+        onSelectCity({
             name: t.gpsLoc,
             country: 'GPS Detected',
             coords: {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude
             }
-         });
-       }, (err) => {
-         alert('Could not get location: ' + err.message);
-       });
-    } else {
-        alert('Geolocation is not supported by this browser.');
+        });
+    } catch (err: any) {
+        console.error(err);
+        alert('Could not get location. Please ensure GPS is on. ' + (err.message || ''));
+    } finally {
+        setLoadingLoc(false);
     }
   };
 
@@ -110,8 +126,17 @@ export const CitySelector: React.FC<Props> = ({ onSelectCity, lang }) => {
             <button onClick={() => setManualMode(!manualMode)} className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition-colors py-1 hover:bg-emerald-50 rounded-md px-2 -ml-2 rtl:-mr-2 rtl:ml-0">
                 {manualMode ? t.backToSearch : t.enterCoordinates}
             </button>
-            <button onClick={getUserLocation} className="flex items-center text-xs font-semibold text-white bg-slate-800 hover:bg-slate-900 transition-colors px-3 py-1.5 rounded-full shadow-md">
-                <Navigation className={`w-3 h-3 ${isRTL ? 'ml-1.5' : 'mr-1.5'}`} /> {t.useGPS}
+            <button 
+                onClick={getUserLocation} 
+                disabled={loadingLoc}
+                className="flex items-center text-xs font-semibold text-white bg-slate-800 hover:bg-slate-900 transition-colors px-3 py-1.5 rounded-full shadow-md disabled:opacity-70"
+            >
+                {loadingLoc ? (
+                    <Loader2 className={`w-3 h-3 animate-spin ${isRTL ? 'ml-1.5' : 'mr-1.5'}`} />
+                ) : (
+                    <Navigation className={`w-3 h-3 ${isRTL ? 'ml-1.5' : 'mr-1.5'}`} /> 
+                )}
+                {t.useGPS}
             </button>
         </div>
       </div>
