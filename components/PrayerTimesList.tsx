@@ -39,20 +39,37 @@ export const PrayerTimesList: React.FC<Props> = ({
   useEffect(() => {
     const tick = () => {
         const now = new Date();
-        const next = times.find(p => p.time > now);
+        
+        // Find next prayer for TODAY
+        let next = times.find(p => p.time > now);
+
+        // If no prayers left today, calculate Fajr for TOMORROW
+        if (!next) {
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowTimes = getPrayerTimesForDay(city.coords, settings.method, tomorrow);
+            // The first prayer of tomorrow (Fajr)
+            if (tomorrowTimes.length > 0) {
+                next = tomorrowTimes[0];
+            }
+        }
+        
         setNextPrayer(next || null);
         
         if (next) {
             const diff = next.time.getTime() - now.getTime();
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
-            // Format 00:00:00
-            const hStr = hours.toString().padStart(2, '0');
-            const mStr = minutes.toString().padStart(2, '0');
-            const sStr = seconds.toString().padStart(2, '0');
-            setTimeLeft(`${hStr}:${mStr}:${sStr}`);
+            if (diff > 0) {
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                const hStr = hours.toString().padStart(2, '0');
+                const mStr = minutes.toString().padStart(2, '0');
+                const sStr = seconds.toString().padStart(2, '0');
+                setTimeLeft(`${hStr}:${mStr}:${sStr}`);
+            } else {
+                 setTimeLeft("00:00:00");
+            }
         } else {
             setTimeLeft('---');
         }
@@ -61,7 +78,7 @@ export const PrayerTimesList: React.FC<Props> = ({
     const interval = setInterval(tick, 1000);
     tick(); 
     return () => clearInterval(interval);
-  }, [times]);
+  }, [times, city.coords, settings.method]);
 
   const handleNotificationToggle = async (id: string, current: boolean) => {
     if (!current) {
@@ -142,7 +159,12 @@ export const PrayerTimesList: React.FC<Props> = ({
 
         {times.map((prayer, idx) => {
             const isEnabled = settings.enabledPrayers[prayer.id];
-            const isNext = prayer.isNext;
+            
+            // Highlight logic for list: only highlight if it's NEXT and it's TODAY.
+            // If next prayer is tomorrow, we don't necessarily highlight today's Fajr unless we want to, 
+            // but standard behavior is to highlight pending prayers.
+            const isNext = nextPrayer && nextPrayer.id === prayer.id && nextPrayer.time.getDate() === prayer.time.getDate();
+            
             const displayName = getTranslatedName(prayer.id);
             
             return (
